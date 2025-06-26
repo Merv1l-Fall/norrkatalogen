@@ -1,4 +1,5 @@
 import Filter from "../components/Filter"
+import "../css/Admin.css"
 
 const Admin = () => {
 	return (

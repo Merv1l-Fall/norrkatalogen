@@ -1,4 +1,28 @@
 .filter-container {
-  display: flex;
-  justify-content: space-between;
+	margin-top: 1rem;
+	display: flex;
+	justify-content: space-between;
+	font-size: 18px;
+
+	.filter-inner-container{
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+
+		.search-input {
+			width: 15rem;
+			padding: 8px;
+			font-size: 18px;
+			border: 1px solid #151515;
+			border-radius: 4px;
+			margin-right: 1rem;
+		}
+	
+		#called-checkbox{
+			width: 1.5rem;
+			height: 1.5rem;
+
+		}
+	}
+
 }
