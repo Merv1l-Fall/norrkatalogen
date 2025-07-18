@@ -23,4 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-normalized_companies.json
+companies.json
+.env

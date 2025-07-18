@@ -1,0 +1,50 @@
+[
+  {
+    "companyName": "1435 AB",
+    "address": "Ronningsvägen 35",
+    "postalCode": "975 93",
+    "city": "Luleå",
+    "contactPerson": "",
+    "contactPhone": "",
+    "called": false,
+    "notes": "",
+    "vehicles": {
+      "grusbil": false,
+      "godsbil": false,
+      "timmerbil": false,
+      "bulkbil": false,
+      "väghyvel": false,
+      "hjullastare": false,
+      "baklastare": false,
+      "kranbil": false,
+      "flisbil": false,
+      "dumper": false,
+      "skogsmaskin": false,
+      "grävare": false
+    }
+  },
+  {
+    "companyName": "2Håll AB",
+    "address": "Bråmåbovägen 39",
+    "postalCode": "792 90",
+    "city": "Sollerön",
+    "contactPerson": "",
+    "contactPhone": "",
+    "called": false,
+    "notes": "",
+    "vehicles": {
+      "grusbil": false,
+      "godsbil": false,
+      "timmerbil": false,
+      "bulkbil": false,
+      "väghyvel": false,
+      "hjullastare": false,
+      "baklastare": false,
+      "kranbil": false,
+      "flisbil": false,
+      "dumper": false,
+      "skogsmaskin": false,
+      "grävare": false
+    }
+  }
+]
