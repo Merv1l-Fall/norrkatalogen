@@ -32,7 +32,7 @@ const CompanyCard = ({ company }) => {
 				{editMode ? (
 					<>
 						<input
-							value={editedData.name}
+							value={editedData.companyName}
 							onChange={(e) => handleChange("name", e.target.value)}
 						/>
 						<input
@@ -40,7 +40,7 @@ const CompanyCard = ({ company }) => {
 							onChange={(e) => handleChange("address", e.target.value)}
 						/>
 						<input
-							value={editedData.zip}
+							value={editedData.postalCode}
 							onChange={(e) => handleChange("zip", e.target.value)}
 						/>
 						<input
@@ -50,10 +50,10 @@ const CompanyCard = ({ company }) => {
 					</>
 				) : (
 					<>
-						<p className="company-name">{editedData.name}</p>
+						<p className="company-name">{editedData.companyName}</p>
 						<p>{editedData.address}</p>
 						<p>
-							{editedData.zip} {editedData.city}
+							{editedData.postalCode} {editedData.city}
 						</p>
 					</>
 				)}
@@ -66,27 +66,31 @@ const CompanyCard = ({ company }) => {
 			<div className="contact-section">
 				{editMode ? (
 					<>
+						<label>Kontaktperson</label>
 						<input
-							value={editedData.contact}
+							value={editedData.contactPerson}
 							onChange={(e) => handleChange("contact", e.target.value)}
 						/>
+						<label>Telefon</label>
 						<input
-							value={editedData.phone}
+							value={editedData.contactPhone}
 							onChange={(e) => handleChange("phone", e.target.value)}
 						/>
 						<label className="ringt-checkbox">
 							Ringt?
 							<input
 								type="checkbox"
-								checked={editedData.ringt}
-								onChange={() => handleChange("ringt", !editedData.ringt)}
+								checked={editedData.called}
+								onChange={() => handleChange("ringt", !editedData.called)}
 							/>
 						</label>
 					</>
 				) : (
 					<>
-						<p>{editedData.contact}</p>
-						<p>{editedData.phone}</p>
+						<p className="contact-info-header">Kontaktperson</p>
+						<p>{editedData.contactPerson}</p>
+						<p>Telefon</p>
+						<p>{editedData.contactPhone}</p>
 						<label className="ringt-checkbox">
 							Ringt?
 							<input className="called-checkbox" type="checkbox" checked={editedData.ringt} onChange={() => handleChange("ringt", !editedData.ringt)}/>
@@ -112,7 +116,7 @@ const CompanyCard = ({ company }) => {
 			<div className="fleet-section">
 				<div className="fleet-title">Fordonsflotta</div>
 				<div className="fleet-grid">
-					{Object.entries(editedData.fleet).map(([vehicle, hasVehicle]) => (
+					{Object.entries(editedData.vehicles).map(([vehicle, hasVehicle]) => (
 						<label key={vehicle}>
 							{vehicle}
 							<input className="vehicle-checkbox"
