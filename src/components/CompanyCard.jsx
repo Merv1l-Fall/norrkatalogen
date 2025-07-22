@@ -1,20 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../css/CompanyCard.css";
+import { updateCompany } from "../data/crud";
+import React from "react";
 
 const CompanyCard = ({ company }) => {
 	const [editMode, setEditMode] = useState(false);
 	const [editedData, setEditedData] = useState(company);
 
+	const VEHICLE_ORDER = [
+		"grusbil", "godsbil", "timmerbil", "bulkbil", "väghyvel", "hjullastare",
+		"baklastare", "kranbil", "flisbil", "dumper", "skogsmaskin", "grävare"
+	];
+
+
+	useEffect(() => {
+    setEditedData(company); // Sync when Company prop changes
+  }, [company]);
+
 	const handleChange = (field, value) => {
-		setEditedData(prev => ({ ...prev, [field]: value }));
+		setEditedData((prev) => ({ ...prev, [field]: value }));
 	};
 
 	const handleFleetChange = (vehicle) => {
-		setEditedData(prev => ({
+		setEditedData((prev) => ({
 			...prev,
-			fleet: {
-				...prev.fleet,
-				[vehicle]: !prev.fleet[vehicle],
+			vehicles: {
+				...prev.vehicles,
+				[vehicle]: !prev.vehicles[vehicle],
 			},
 		}));
 	};
@@ -23,6 +35,13 @@ const CompanyCard = ({ company }) => {
 		// Firestore update here
 		console.log("Saved data:", editedData);
 		setEditMode(false);
+		updateCompany(editedData.id, editedData)
+			.then(() => {
+				console.log("Company updated successfully");
+			})
+			.catch((error) => {
+				console.error("Error updating company:", error);
+			});
 	};
 
 	return (
@@ -33,19 +52,27 @@ const CompanyCard = ({ company }) => {
 					<>
 						<input
 							value={editedData.companyName}
-							onChange={(e) => handleChange("name", e.target.value)}
+							onChange={(e) =>
+								handleChange("companyName", e.target.value)
+							}
 						/>
 						<input
 							value={editedData.address}
-							onChange={(e) => handleChange("address", e.target.value)}
+							onChange={(e) =>
+								handleChange("address", e.target.value)
+							}
 						/>
 						<input
 							value={editedData.postalCode}
-							onChange={(e) => handleChange("zip", e.target.value)}
+							onChange={(e) =>
+								handleChange("postalCode", e.target.value)
+							}
 						/>
 						<input
 							value={editedData.city}
-							onChange={(e) => handleChange("city", e.target.value)}
+							onChange={(e) =>
+								handleChange("city", e.target.value)
+							}
 						/>
 					</>
 				) : (
@@ -57,7 +84,12 @@ const CompanyCard = ({ company }) => {
 						</p>
 					</>
 				)}
-				<button className="edit-button" onClick={() => (editMode ? handleSave() : setEditMode(true))}>
+				<button
+					className="edit-button"
+					onClick={() =>
+						editMode ? handleSave() : setEditMode(true)
+					}
+				>
 					{editMode ? "Spara" : "Redigera"}
 				</button>
 			</div>
@@ -69,19 +101,26 @@ const CompanyCard = ({ company }) => {
 						<label>Kontaktperson</label>
 						<input
 							value={editedData.contactPerson}
-							onChange={(e) => handleChange("contact", e.target.value)}
+							onChange={(e) =>
+								handleChange("contactPerson", e.target.value)
+							}
 						/>
 						<label>Telefon</label>
 						<input
 							value={editedData.contactPhone}
-							onChange={(e) => handleChange("phone", e.target.value)}
+							onChange={(e) =>
+								handleChange("contactPhone", e.target.value)
+							}
 						/>
 						<label className="ringt-checkbox">
 							Ringt?
 							<input
 								type="checkbox"
 								checked={editedData.called}
-								onChange={() => handleChange("ringt", !editedData.called)}
+								disabled={!editMode}
+								onChange={() =>
+									handleChange("called", !editedData.called)
+								}
 							/>
 						</label>
 					</>
@@ -93,7 +132,15 @@ const CompanyCard = ({ company }) => {
 						<p>{editedData.contactPhone}</p>
 						<label className="ringt-checkbox">
 							Ringt?
-							<input className="called-checkbox" type="checkbox" checked={editedData.ringt} onChange={() => handleChange("ringt", !editedData.ringt)}/>
+							<input
+								className="called-checkbox"
+								disabled={!editMode}
+								type="checkbox"
+								checked={editedData.called}
+								onChange={() =>
+									handleChange("called", !editedData.called)
+								}
+							/>
 						</label>
 					</>
 				)}
@@ -114,23 +161,27 @@ const CompanyCard = ({ company }) => {
 
 			{/* Fleet */}
 			<div className="fleet-section">
-				<div className="fleet-title">Fordonsflotta</div>
-				<div className="fleet-grid">
-					{Object.entries(editedData.vehicles).map(([vehicle, hasVehicle]) => (
-						<label key={vehicle}>
-							{vehicle}
-							<input className="vehicle-checkbox"
-								type="checkbox"
-								checked={hasVehicle}
-								onChange={() => handleFleetChange(vehicle)}
-								disabled={!editMode}
-							/>
-						</label>
-					))}
-				</div>
-			</div>
+  <div className="fleet-title">Fordonsflotta</div>
+  <div className="fleet-grid">
+    {VEHICLE_ORDER.map(vehicle => (
+      <label key={vehicle}>
+		<span  className="vehicle-label">
+        {vehicle.charAt(0).toUpperCase() + vehicle.slice(1)}
+
+		</span>
+        <input
+          className="vehicle-checkbox"
+          type="checkbox"
+          checked={!!editedData.vehicles[vehicle]}
+          onChange={() => handleFleetChange(vehicle)}
+          disabled={!editMode}
+		  />
+		  </label>
+    ))}
+  </div>
+</div>
 		</div>
 	);
 };
 
-export default CompanyCard;
+export default React.memo(CompanyCard);

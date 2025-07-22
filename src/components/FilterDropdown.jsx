@@ -8,14 +8,15 @@ const vehicleTypes = [
 
 const FilterDropdown = ({ selected, setSelected }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const selectedArray = Array.isArray(selected) ? selected : [];
 
   const toggleOption = (type) => {
-    setSelected((prev) =>
-      prev.includes(type)
-        ? prev.filter((item) => item !== type)
-        : [...prev, type]
-    );
-  };
+  const arr = Array.isArray(selected) ? selected : [];
+  const newSelected = arr.includes(type)
+    ? arr.filter((item) => item !== type)
+    : [...arr, type];
+  setSelected(newSelected);
+};
 
   return (
     <div className="dropdown-wrapper">
@@ -35,7 +36,7 @@ const FilterDropdown = ({ selected, setSelected }) => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={selected.includes(type)}
+                    checked={selectedArray.includes(type)}
                     onChange={() => toggleOption(type)}
                   />
                   {type}

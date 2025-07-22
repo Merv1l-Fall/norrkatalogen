@@ -95,3 +95,8 @@ textarea {
   width: 1rem;
   height: 1rem;
 }
+
+.vehicle-label {
+  display: inline-block;
+  min-width: 6.05rem;
+}

@@ -1,49 +1,79 @@
-import Filter from "../components/Filter"
+import Filter from "../components/Filter";
 import CompanyCard from "../components/CompanyCard";
-import sampleCompanies from "../data/testData";
 import useCompanyStore from "../stores/companyStore.js";
-import "../css/Admin.css"
-
+import { useMemo } from "react";
+import exportToExcel from "../utils/export.js";
+import "../css/Admin.css";
 
 const Admin = () => {
 	const companies = useCompanyStore((state) => state.companies);
 	const searchTerm = useCompanyStore((state) => state.searchTerm);
 	const hideCalled = useCompanyStore((state) => state.hideCalled);
 	const selectedVehicles = useCompanyStore((state) => state.selectedVehicles);
+	const loading = useCompanyStore((state) => state.loading);
+	const showWithNotesOnly = useCompanyStore((state) => state.showWithNotesOnly);
 
-	const filteredCompanies = companies.filter((company) => {
-		if (hideCalled && company.called) return false;
+	const normalize = (str) =>
+		str
+			?.toLowerCase()
+			.normalize("NFD")
+			.replace(/[\u0300-\u036f]/g, "") || "";
 
-		const term = searchTerm.toLowerCase();
-		const match = company.companyName?.toLowerCase().includes(term);
-		if (!match) return false;
+	const normalizedSearchTerm = normalize(searchTerm);
 
-		if (selectedVehicles.length > 0) {
-			return selectedVehicles.every((v) => company.vehicles?.[v]);
-		}
+	const filteredCompanies = useMemo(() => {
+		console.log("Filtering companies (should not log on every render!)");
+		const vehicles = Array.isArray(selectedVehicles)
+			? selectedVehicles
+			: [];
+		return companies.filter((company) => {
+			if (hideCalled && company.called) return false;
+			if (showWithNotesOnly && (!company.notes || company.notes.trim() === "")) return false;
+			
 
-		return true;
-	});
+			const companyName = normalize(company.companyName);
+			if (!companyName.includes(normalizedSearchTerm)) return false;
+			
 
-	const sortedCompanies = filteredCompanies.sort((a, b) => {
-		const nameA = a.companyName.toLowerCase();
-		const nameB = b.companyName.toLowerCase();
-		return nameA.localeCompare(nameB);
-	});
+			if (vehicles.length > 0) {
+				return vehicles.some(
+					(v) => company.vehicles?.[v.toLowerCase()] === true
+				);
+			}
+			
 
-	
+			return true;
+		});
+	}, [companies, hideCalled, normalizedSearchTerm, selectedVehicles, showWithNotesOnly]);
+
+	const sortedCompanies = useMemo(() => {
+		return [...filteredCompanies].sort((a, b) => {
+			const nameA = a.companyName.toLowerCase();
+			const nameB = b.companyName.toLowerCase();
+			return nameA.localeCompare(nameB);
+		});
+	}, [filteredCompanies]);
+
 	return (
 		<main className="admin-page">
+			<button className="export-btn" onClick={() => exportToExcel(sortedCompanies)}>
+				Exportera till Excel
+			</button>
 			<Filter />
 
 			<div className="company-list">
-				{sortedCompanies.map((company, index) => (
-					<CompanyCard key={index} company={company} />
-				))}
+				{loading ? (
+					<p className="loading-text">Laddar</p>
+				) : sortedCompanies.length === 0 ? (
+					<p className="no-companies">Inga företag hittades</p>
+				) : (
+					sortedCompanies.map((company) => (
+						<CompanyCard key={company.id} company={company} />
+					))
+				)}
 			</div>
 		</main>
-	)
-
-}
+	);
+};
 
 export default Admin;

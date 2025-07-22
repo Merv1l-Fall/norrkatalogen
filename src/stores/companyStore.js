@@ -1,9 +1,11 @@
 import { create } from "zustand";
-import { getCompanies, 
-addCompany as firestoreAddCompany,
-updateCompany as firestoreUpdateCompany} from "../data/crud";
+import {
+	getCompanies,
+	addCompany as firestoreAddCompany,
+	updateCompany as firestoreUpdateCompany,
+} from "../data/crud";
 
-const useCompanyStore = create((set, get) => ({
+const useCompanyStore = create((set) => ({
 	companies: [],
 	loading: true,
 
@@ -11,14 +13,13 @@ const useCompanyStore = create((set, get) => ({
 	searchTerm: "",
 	selectedVehicles: [],
 	hideCalled: false,
+	showWithNotesOnly: false,
 
 	setSearchTerm: (term) => set({ searchTerm: term }),
-	setSelectedVehicles: (vehicles) => set({ selectedVehicles: vehicles }),
+	setSelectedVehicles: (vehicles) =>
+		set({ selectedVehicles: Array.isArray(vehicles) ? vehicles : [] }),
 	setHideCalled: (val) => set({ hideCalled: val }),
-
-	
-	
-
+	setShowWithNotesOnly: (val) => set({ showWithNotesOnly: val }),
 
 	fetchCompanies: async () => {
 		set({ loading: true });
@@ -31,12 +32,15 @@ const useCompanyStore = create((set, get) => ({
 			set({ loading: false });
 		}
 	},
-	
+
 	AddCompany: async (newCompanyData) => {
 		try {
 			const docId = await firestoreAddCompany(newCompanyData);
 			set((state) => ({
-				companies: [...state.companies, { id: docId, ...newCompanyData }]
+				companies: [
+					...state.companies,
+					{ id: docId, ...newCompanyData },
+				],
 			}));
 			return docId;
 		} catch (error) {
@@ -51,14 +55,13 @@ const useCompanyStore = create((set, get) => ({
 			set((state) => ({
 				companies: state.companies.map((company) =>
 					company.id === id ? { ...company, ...updatedData } : company
-				)
+				),
 			}));
 		} catch (error) {
 			console.error("Error updating company:", error);
 			throw error;
 		}
 	},
-
 }));
 
 export default useCompanyStore;

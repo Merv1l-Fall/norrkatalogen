@@ -42,6 +42,7 @@ async function updateCompany(id, companyData) {
 	try {
 		const companyDoc = doc(db, COMPANIES_COLLECTION, id);
 		await updateDoc(companyDoc, companyData);
+		console.log(`Company with name ${companyData.companyName} updated successfully`);
 	} catch (error) {
 		console.error("Error updating company: ", error);
 		throw error;
