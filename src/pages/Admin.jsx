@@ -3,6 +3,7 @@ import CompanyCard from "../components/CompanyCard";
 import useCompanyStore from "../stores/companyStore.js";
 import { useMemo } from "react";
 import exportToExcel from "../utils/export.js";
+import { FixedSizeList as List } from "react-window";
 import "../css/Admin.css";
 
 const Admin = () => {
@@ -62,16 +63,25 @@ const Admin = () => {
 			<Filter />
 
 			<div className="company-list">
-				{loading ? (
-					<p className="loading-text">Laddar</p>
-				) : sortedCompanies.length === 0 ? (
-					<p className="no-companies">Inga företag hittades</p>
-				) : (
-					sortedCompanies.map((company) => (
-						<CompanyCard key={company.id} company={company} />
-					))
-				)}
-			</div>
+	{loading ? (
+		<p className="loading-text">Laddar</p>
+	) : sortedCompanies.length === 0 ? (
+		<p className="no-companies">Inga företag hittades</p>
+	) : (
+		<List
+			height={window.innerHeight} // or dynamically from window.innerHeight
+			itemCount={sortedCompanies.length}
+			itemSize={250} // Adjust based on your card height
+			width={"100%"}
+		>
+			{({ index, style }) => (
+				<div style={style}>
+					<CompanyCard company={sortedCompanies[index]} />
+				</div>
+			)}
+		</List>
+	)}
+</div>
 		</main>
 	);
 };
