@@ -5,6 +5,7 @@ import { useMemo } from "react";
 import exportToExcel from "../utils/export.js";
 import { FixedSizeList as List } from "react-window";
 import "../css/Admin.css";
+import "../css/Animation.css";
 
 const Admin = () => {
 	const companies = useCompanyStore((state) => state.companies);

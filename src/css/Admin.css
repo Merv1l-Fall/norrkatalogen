@@ -2,23 +2,6 @@ main{
 	width: 80%;
 }
 
-.loading-text {
-	font-size: 3rem;
-	font-weight: bold;
-	color: #000000;
-	text-align: center;
-	margin-top: 20px;
-}
-
-.loading-text::after {
-  content: '';
-  display: inline-block;
-  width: 1ch;
-  animation: dots 1s steps(4, end) infinite;
-  overflow: hidden;
-  vertical-align: bottom;
-}
-
 .export-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
@@ -27,12 +10,4 @@ main{
   border: none;
   border-radius: 6px;
   cursor: pointer;
-}
-
-@keyframes dots {
-  0% { content: ''; }
-  25% { content: '.'; }
-  50% { content: '..'; }
-  75% { content: '...'; }
-  100% { content: ''; }
 }
