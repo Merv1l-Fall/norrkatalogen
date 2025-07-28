@@ -7,17 +7,26 @@ import Login from "./pages/Login.jsx";
 import PrivateRoute from "./pages/PrivateRoute.jsx";
 import { initAuth } from "./stores/authStore";
 import useCompanyStore from "./stores/companyStore.js";
+import useAuthStore from "./stores/authStore";
 
 import "./App.css";
 
 function App() {
-	// Fetch companies when the app starts
+	// start auth process when the app starts
 	const { fetchCompanies } = useCompanyStore();
+	const { user } = useAuthStore();
 
 	useEffect(() => {
-		fetchCompanies();
-		initAuth(); // 🔐 Start listening to auth state
+		initAuth(); // Start listening to auth state
 	}, []);
+
+	// Fetch companies when user is authenticated
+	// This ensures that companies are fetched only after the user is authenticated
+	useEffect(() => {
+		if (user) {
+			fetchCompanies();
+		}
+	}, [user]);
 
 	return (
 		<Router>
@@ -33,7 +42,6 @@ function App() {
 							</PrivateRoute>
 						}
 					/>
-					{/* Optional: redirect unknown routes */}
 					<Route path="*" element={<Login />} />
 				</Routes>
 			</div>
