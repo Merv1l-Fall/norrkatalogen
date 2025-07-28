@@ -15,7 +15,12 @@ const Header = () => {
 				<img src="src/assets/logo.svg" alt="Norrkatalogens logga" />
 				<h1>ADMIN</h1>
 			</div>
+			<div className="user-info-container">
+			{user && <p className="user-info">Inloggad som: {user.email.split('@')[0]}</p>}
+
 			{user && <button className="logout-btn" onClick={handleLogout}> Logga ut </button>}
+
+			</div>
 		</header>
 	)
 }

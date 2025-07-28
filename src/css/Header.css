@@ -25,6 +25,14 @@
 		}
 	}
 
+	.user-info-container{
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		color: #fff;
+		font-size: 1.2rem;
+	}
+
 	.logout-btn{
 		background-color: #fff;
 		color: #151515;
