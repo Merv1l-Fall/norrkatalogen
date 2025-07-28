@@ -8,6 +8,7 @@ import PrivateRoute from "./pages/PrivateRoute.jsx";
 import { initAuth } from "./stores/authStore";
 import useCompanyStore from "./stores/companyStore.js";
 import useAuthStore from "./stores/authStore";
+import NewCompany from "./pages/NewCompany.jsx";
 
 import "./App.css";
 
@@ -21,7 +22,6 @@ function App() {
 	}, []);
 
 	// Fetch companies when user is authenticated
-	// This ensures that companies are fetched only after the user is authenticated
 	useEffect(() => {
 		if (user) {
 			fetchCompanies();
@@ -29,24 +29,29 @@ function App() {
 	}, [user]);
 
 	return (
-		<Router>
-			<div className="app">
-				<Header />
-				<Routes>
-					<Route path="/login" element={<Login />} />
-					<Route
-						path="/admin"
-						element={
-							<PrivateRoute>
-								<Admin />
-							</PrivateRoute>
-						}
-					/>
-					<Route path="*" element={<Login />} />
-				</Routes>
-			</div>
-		</Router>
-	);
+		// <Router>
+		// 	<div className="app">
+		// 		<Header />
+		// 		<Routes>
+		// 			<Route path="/login" element={<Login />} />
+		// 			<Route
+		// 				path="/admin"
+		// 				element={
+		// 					<PrivateRoute>
+		// 						<Admin />
+		// 					</PrivateRoute>
+		// 				}
+		// 			/>
+		// 			<Route path="*" element={<Login />} />
+		// 		</Routes>
+		// 	</div>
+		// </Router>
+		<div className="app">
+
+			<Header />
+			<NewCompany />
+		</div>
+		);
 }
 
 export default App;
