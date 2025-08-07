@@ -2,6 +2,7 @@ import "../css/header.css";
 import { signOut } from "firebase/auth";
 import { auth } from "../data/firebase";
 import useAuthStore from "../stores/authStore";
+import Logo from "../assets/logo.svg";
 
 const Header = () => {
 	const { user } = useAuthStore();
@@ -12,7 +13,7 @@ const Header = () => {
 	return (
 		<header className="header">
 			<div className="header-inner">
-				<img src="src/assets/logo.svg" alt="Norrkatalogens logga" />
+				<img src={Logo} alt="Norrkatalogens logga" />
 				<h1>ADMIN</h1>
 			</div>
 			<div className="user-info-container">

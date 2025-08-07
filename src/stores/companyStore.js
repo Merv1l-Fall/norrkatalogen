@@ -62,6 +62,14 @@ const useCompanyStore = create((set) => ({
 			throw error;
 		}
 	},
+
+	updateCompanyLocally: (updatedCompany) =>
+		set((state) => ({
+			companies: state.companies.map((company) =>
+				company.id === updatedCompany.id ? updatedCompany : company
+			),
+		})),
+
 }));
 
 export default useCompanyStore;
