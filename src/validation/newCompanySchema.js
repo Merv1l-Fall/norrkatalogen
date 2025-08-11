@@ -52,6 +52,6 @@ const companySchema = Joi.object({
 	  "string.empty": "Telefonnummer krävs",
 	  
 }),
-});
+}).unknown();
 
 export default companySchema;

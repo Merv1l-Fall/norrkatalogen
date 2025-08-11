@@ -29,29 +29,37 @@ function App() {
 	}, [user]);
 
 	return (
-		// <Router>
-		// 	<div className="app">
-		// 		<Header />
-		// 		<Routes>
-		// 			<Route path="/login" element={<Login />} />
-		// 			<Route
-		// 				path="/admin"
-		// 				element={
-		// 					<PrivateRoute>
-		// 						<Admin />
-		// 					</PrivateRoute>
-		// 				}
-		// 			/>
-		// 			<Route path="*" element={<Login />} />
-		// 		</Routes>
-		// 	</div>
-		// </Router>
-		<div className="app">
+		<Router>
+			<div className="app">
+				<Header />
+				<Routes>
+					<Route path="/login" element={<Login />} />
+					<Route
+						path="/admin"
+						element={
+							<PrivateRoute>
+								<Admin />
+							</PrivateRoute>
+						}
+					/>
+					<Route
+						path="/nytt-foretag"
+						element={
+							<PrivateRoute>
+								<NewCompany />
+							</PrivateRoute>
+						}
+					/>
+					<Route path="*" element={<Login />} />
+				</Routes>
+			</div>
+		</Router>
+		// <div className="app">
 
-			<Header />
-			<NewCompany />
-		</div>
-		);
+		// 	<Header />
+		// 	<NewCompany />
+		// </div>
+	);
 }
 
 export default App;

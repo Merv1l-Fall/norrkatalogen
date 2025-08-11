@@ -2,7 +2,7 @@ main{
 	width: 80%;
 }
 
-.export-btn {
+.admin-top-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   background-color: #151515;
@@ -10,4 +10,17 @@ main{
   border: none;
   border-radius: 6px;
   cursor: pointer;
+
+  &:hover{
+	background-color: #333;
+  }
+}
+
+.display-list{
+	margin-top: 1rem;
+}
+
+.admin-btn-container{
+	display: flex;
+	gap: 2rem
 }

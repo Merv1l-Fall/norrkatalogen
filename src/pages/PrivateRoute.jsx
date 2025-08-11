@@ -14,15 +14,17 @@ const PrivateRoute = ({ children }) => {
 	if (loading) {
 		return (
 			<div>
-				<p className="loading-text">Loading...</p>
+				<p className="loading-text">Laddar</p>
 			</div>
 		);
 	}
 
 	if (!user) {
+		return(
 		<div>
-			<p className="loading-text">Omdirigerar...</p>
-		</div>;
+			<p className="loading-text">Omdirigerar</p>
+		</div>
+		);
 	}
 
 	return children;

@@ -2,6 +2,7 @@ import Filter from "../components/Filter";
 import CompanyCard from "../components/CompanyCard";
 import useCompanyStore from "../stores/companyStore.js";
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import exportToExcel from "../utils/export.js";
 import { FixedSizeList as List } from "react-window";
 import "../css/Admin.css";
@@ -14,6 +15,8 @@ const Admin = () => {
 	const selectedVehicles = useCompanyStore((state) => state.selectedVehicles);
 	const loading = useCompanyStore((state) => state.loading);
 	const showWithNotesOnly = useCompanyStore((state) => state.showWithNotesOnly);
+
+	const navigate = useNavigate();
 
 	const normalize = (str) =>
 		str
@@ -56,9 +59,14 @@ const Admin = () => {
 
 	return (
 		<main className="admin-page">
-			<button className="export-btn" onClick={() => exportToExcel(sortedCompanies)}>
+			<div className="admin-btn-container">
+			<button className="admin-top-btn" onClick={() => exportToExcel(sortedCompanies)}>
 				Exportera till Excel
 			</button>
+
+			<button className="admin-top-btn" onClick={() => navigate("/nytt-foretag")}>Lägg till nytt företag</button>
+
+			</div>
 			<Filter />
 
 			<div className="company-list">
@@ -68,9 +76,10 @@ const Admin = () => {
 		<p className="no-companies">Inga företag hittades</p>
 	) : (
 		<List
-			height={window.innerHeight} // or dynamically from window.innerHeight
+		className="display-list"
+			height={window.innerHeight}
 			itemCount={sortedCompanies.length}
-			itemSize={250} // Adjust based on your card height
+			itemSize={250}
 			width={"100%"}
 		>
 			{({ index, style }) => (

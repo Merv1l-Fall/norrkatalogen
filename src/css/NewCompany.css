@@ -12,6 +12,19 @@
   box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.75);
 }
 
+.new-company-back-btn{
+	margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #151515;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover{
+	background-color: #333;
+  }
+}
 .add-company-form {
   display: flex;
   flex-direction: column;
@@ -31,6 +44,10 @@
   cursor: pointer;
   font-size: 1rem;
   width: 100%;
+
+  &:disabled{
+	cursor: not-allowed;
+  }
 }
 
 .add{
@@ -40,6 +57,9 @@
 	&:hover{
 		background-color: #333;
 	}
+	&:disabled{
+	background-color: #272727;
+  }
 }
 
 .clear{
@@ -51,6 +71,9 @@
 	&:hover{
 		background-color: #f0f0f0;
 	}
+	&:disabled{
+	background-color: #f0f0f0;
+  }
 }
 
 .error {

@@ -42,6 +42,7 @@ const useCompanyStore = create((set) => ({
 					{ id: docId, ...newCompanyData },
 				],
 			}));
+			console.log("Company added ,", docId);
 			return docId;
 		} catch (error) {
 			console.error("Error adding company:", error);
