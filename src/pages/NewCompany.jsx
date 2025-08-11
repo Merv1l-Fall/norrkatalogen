@@ -12,6 +12,7 @@ const initFormData = {
 	notes: "",
 	contactPerson: "",
 	contactPhone: "",
+	email: "",
 	vehicles: {
 		baklastare: false,
 		bulkbil: false,
@@ -137,6 +138,16 @@ const NewCompany = () => {
 					onChange={handleChange}
 					onBlur={() => setTouched(true)} />
 				<p className="error">{error.contactPhone}</p>
+
+				<label htmlFor="email">E-post</label>
+				<input
+					id="email"
+					type="text"
+					className="add-company-inputs"
+					value={formData.email}
+					onChange={handleChange}
+					onBlur={() => setTouched(true)} />
+				<p className="error">{error.email}</p>
 
 				<div>
 					<button type="submit" className="add form-btn" disabled={!touched}>Lägg till</button>

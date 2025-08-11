@@ -1,8 +1,6 @@
 import * as XLSX from "xlsx";
 
-// ...inside your Admin component:
 const exportToExcel = (sortedCompanies) => {
-  // Step 1: Find all vehicle types that are true for at least one company
   const allVehicleTypes = Array.from(
     new Set(
       sortedCompanies.flatMap(company =>
@@ -13,7 +11,7 @@ const exportToExcel = (sortedCompanies) => {
     )
   );
 
-  // Step 2: Prepare data
+
   const data = sortedCompanies.map(company => {
 	const vehicles = Object.entries(company.vehicles || {})
       .filter(([_, val]) => val)
@@ -32,7 +30,7 @@ const exportToExcel = (sortedCompanies) => {
     
   });
 
-  // Step 3: Export
+  // Export
   const worksheet = XLSX.utils.json_to_sheet(data);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, "Företag");

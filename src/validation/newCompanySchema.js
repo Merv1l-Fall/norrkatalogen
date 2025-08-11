@@ -51,7 +51,16 @@ const companySchema = Joi.object({
 	  "string.pattern.base": "Telefonnummer måste vara mellan 6 och 15 tecken och kan innehålla siffror, plus, bindestreck och mellanslag.",
 	  "string.empty": "Telefonnummer krävs",
 	  
-}),
+	  
+	}),
+	email: Joi.string()
+	.email({ tlds: { allow: false } }) // Disables TLD restriction
+	  .required()
+	  .messages({
+		  "any.required": "E-post krävs", 
+		  "string.empty": "E-post krävs",
+		  "string.email": "E-postadressen är ogiltig",
+	  })
 }).unknown();
 
 export default companySchema;
