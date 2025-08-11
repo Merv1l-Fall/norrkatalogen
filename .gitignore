@@ -23,5 +23,11 @@ dist-ssr
 *.sln
 *.sw?
 
+# firebase config files
+.firebase/
+.firebaserc
+firebase.json
+
+# Private data
 companies.json
 .env

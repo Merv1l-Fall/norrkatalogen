@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import "../css/CompanyCard.css";
 import { updateCompany } from "../data/crud";
 import React from "react";
+import useCompanyStore from "../stores/companyStore.js";
 
 const CompanyCard = ({ company }) => {
 	const [editMode, setEditMode] = useState(false);
 	const [editedData, setEditedData] = useState(company);
+
+	const updateCompanyLocally = useCompanyStore(
+		(state) => state.updateCompanyLocally);
 
 	const VEHICLE_ORDER = [
 		"grusbil", "godsbil", "timmerbil", "bulkbil", "väghyvel", "hjullastare",
@@ -42,6 +46,8 @@ const CompanyCard = ({ company }) => {
 			.catch((error) => {
 				console.error("Error updating company:", error);
 			});
+			console.log("Updating company locally");
+			updateCompanyLocally(editedData);
 	};
 
 	return (

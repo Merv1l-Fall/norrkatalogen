@@ -48,13 +48,11 @@ const Admin = () => {
 		});
 	}, [companies, hideCalled, normalizedSearchTerm, selectedVehicles, showWithNotesOnly]);
 
-	const sortedCompanies = useMemo(() => {
-		return [...filteredCompanies].sort((a, b) => {
-			const nameA = a.companyName.toLowerCase();
-			const nameB = b.companyName.toLowerCase();
-			return nameA.localeCompare(nameB);
-		});
-	}, [filteredCompanies]);
+	const sortedCompanies = [...filteredCompanies].sort((a, b) => {
+		const nameA = a.companyName.toLowerCase();
+		const nameB = b.companyName.toLowerCase();
+		return nameA.localeCompare(nameB);
+	});
 
 	return (
 		<main className="admin-page">
