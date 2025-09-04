@@ -18,8 +18,8 @@ const CompanyCard = ({ company }) => {
 
 
 	useEffect(() => {
-    setEditedData(company); // Sync when Company prop changes
-  }, [company]);
+		setEditedData(company); // Sync when Company prop changes
+	}, [company]);
 
 	const handleChange = (field, value) => {
 		setEditedData((prev) => ({ ...prev, [field]: value }));
@@ -46,8 +46,8 @@ const CompanyCard = ({ company }) => {
 			.catch((error) => {
 				console.error("Error updating company:", error);
 			});
-			console.log("Updating company locally");
-			updateCompanyLocally(editedData);
+		console.log("Updating company locally");
+		updateCompanyLocally(editedData);
 	};
 
 	return (
@@ -104,18 +104,32 @@ const CompanyCard = ({ company }) => {
 			<div className="contact-section">
 				{editMode ? (
 					<>
-						<label>Kontaktperson</label>
+						<label htmlFor="contact-person">Kontaktperson</label>
 						<input
+							id="contact-person"
+							type="text"
 							value={editedData.contactPerson}
 							onChange={(e) =>
 								handleChange("contactPerson", e.target.value)
 							}
 						/>
-						<label>Telefon</label>
+						<label htmlFor="phone">Telefon</label>
 						<input
+							id="phone"
+							type="text"
 							value={editedData.contactPhone}
 							onChange={(e) =>
 								handleChange("contactPhone", e.target.value)
+							}
+						/>
+						<label htmlFor="email">E-post</label>
+						<input
+							id="email"
+							type="text"
+							value={editedData.email}
+							disabled={!editMode}
+							onChange={(e) =>
+								handleChange("email", e.target.value)
 							}
 						/>
 						<label className="ringt-checkbox">
@@ -136,6 +150,8 @@ const CompanyCard = ({ company }) => {
 						<p>{editedData.contactPerson}</p>
 						<p>Telefon</p>
 						<p>{editedData.contactPhone}</p>
+						<p>E-post</p>
+						<p>{editedData.email}</p>
 						<label className="ringt-checkbox">
 							Ringt?
 							<input
@@ -167,25 +183,25 @@ const CompanyCard = ({ company }) => {
 
 			{/* Fleet */}
 			<div className="fleet-section">
-  <div className="fleet-title">Fordonsflotta</div>
-  <div className="fleet-grid">
-    {VEHICLE_ORDER.map(vehicle => (
-      <label key={vehicle}>
-		<span  className="vehicle-label">
-        {vehicle.charAt(0).toUpperCase() + vehicle.slice(1)}
+				<div className="fleet-title">Fordonsflotta</div>
+				<div className="fleet-grid">
+					{VEHICLE_ORDER.map(vehicle => (
+						<label key={vehicle}>
+							<span className="vehicle-label">
+								{vehicle.charAt(0).toUpperCase() + vehicle.slice(1)}
 
-		</span>
-        <input
-          className="vehicle-checkbox"
-          type="checkbox"
-          checked={!!editedData.vehicles[vehicle]}
-          onChange={() => handleFleetChange(vehicle)}
-          disabled={!editMode}
-		  />
-		  </label>
-    ))}
-  </div>
-</div>
+							</span>
+							<input
+								className="vehicle-checkbox"
+								type="checkbox"
+								checked={!!editedData.vehicles[vehicle]}
+								onChange={() => handleFleetChange(vehicle)}
+								disabled={!editMode}
+							/>
+						</label>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 };

@@ -27,7 +27,11 @@ dist-ssr
 .firebase/
 .firebaserc
 firebase.json
+firebase-adminsdk.json
 
 # Private data
 companies.json
 .env
+
+#scripts
+updateCompanies.mjs
