@@ -79,7 +79,7 @@ const Admin = () => {
 		className="display-list"
 			height={window.innerHeight}
 			itemCount={sortedCompanies.length}
-			itemSize={250}
+			itemSize={300}
 			width={"100%"}
 		>
 			{({ index, style }) => (

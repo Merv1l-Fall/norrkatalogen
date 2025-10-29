@@ -35,3 +35,4 @@ companies.json
 
 #scripts
 updateCompanies.mjs
+updateCompaniesFleet.mjs

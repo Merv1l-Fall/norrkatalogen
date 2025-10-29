@@ -13,7 +13,7 @@ const CompanyCard = ({ company }) => {
 
 	const VEHICLE_ORDER = [
 		"grusbil", "godsbil", "timmerbil", "bulkbil", "väghyvel", "hjullastare",
-		"baklastare", "kranbil", "flisbil", "dumper", "skogsmaskin", "grävare"
+		"baklastare", "kranbil", "flisbil", "dumper", "skogsmaskin", "grävare", "maskintrailer", "flakväxlare", "trailerdragare", "asfaltstrailer"
 	];
 
 
