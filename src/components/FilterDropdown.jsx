@@ -3,7 +3,7 @@ import "../css/FilterDropdown.css";
 
 const vehicleTypes = [
   "Grusbil", "Godsbil", "Timmerbil", "Bulkbil", "Väghyvel", "Hjullastare",
-  "Baklastare", "Kranbil", "Flisbil", "Dumper", "Skogsmaskin", "Grävare"
+  "Baklastare", "Kranbil", "Flisbil", "Dumper", "Skogsmaskin", "Grävare", "Maskintrailer", "Flakväxlare", "Trailerdragare", "Asfaltstrailer"
 ];
 
 const FilterDropdown = ({ selected, setSelected }) => {
