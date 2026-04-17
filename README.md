@@ -1,4 +1,4 @@
-# Norrkatalogen
+# Norrkatalogen Admin Tool
 
 Norrkatalogen is an internal admin tool for managing a directory of companies, built with React and Firebase.  
 It allows authenticated users to add, edit, filter, and export company data, making it easy to keep track of business contacts and their details.
