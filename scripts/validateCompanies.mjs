@@ -30,7 +30,7 @@ function validateFirestoreData(obj, path = '') {
 }
 
 try {
-  const file = await fs.readFile('./scripts/companies.json', 'utf-8');
+  const file = await fs.readFile('./scripts/testCompanies.json', 'utf-8');
   const companies = JSON.parse(file);
 
   let errors = 0;

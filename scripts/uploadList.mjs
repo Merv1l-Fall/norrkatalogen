@@ -1,5 +1,26 @@
-import { addCompany } from "../src/data/crud.js";
+import dotenv from "dotenv";
+import { initializeApp } from "firebase/app";
+import { getFirestore, collection, addDoc } from "firebase/firestore";
 import fs from "fs/promises";
+
+dotenv.config();
+
+const firebaseConfig = {
+  apiKey: process.env.VITE_FIREBASE_API_KEY,
+  authDomain: process.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VITE_FIREBASE_APP_ID,
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+async function addCompany(companyData) {
+  const docRef = await addDoc(collection(db, "companies"), companyData);
+  return docRef.id;
+}
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -12,10 +33,14 @@ function validateForFirestore(obj, path = "") {
     if (typeof key !== "string") {
       throw new Error(`Invalid key type at ${currentPath}`);
     }
-	if (/[.$\/[\]#]/.test(key)) {
-      throw new Error(`Invalid key character in ${currentPath}`);
-    }
-    if (key.includes(".") || key.includes("$") || key.includes("/")) {
+    if (
+      key.includes(".") ||
+      key.includes("$") ||
+      key.includes("/") ||
+      key.includes("[") ||
+      key.includes("]") ||
+      key.includes("#")
+    ) {
       throw new Error(`Invalid key character in ${currentPath}`);
     }
 
@@ -35,7 +60,7 @@ function validateForFirestore(obj, path = "") {
 }
 
 async function uploadCompanies() {
-  const file = await fs.readFile('./scripts/companies.json', 'utf-8');
+  const file = await fs.readFile('./scripts/testCompanies.json', 'utf-8');
   const companies = JSON.parse(file);
 
   for (const company of companies) {
