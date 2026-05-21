@@ -1,10 +1,10 @@
-import { useMemo, type CSSProperties, type ReactElement } from "react";
+import { useEffect, useMemo, useState, type ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { FixedSizeList as List } from "react-window";
 import Filter from "@/components/Filter";
 import CompanyCard from "@/components/CompanyCard";
 import useCompanyStore from "@/stores/companyStore";
 import exportToExcel from "@/utils/export";
+import type { Company } from "@/types";
 import "@/css/Admin.css";
 import "@/css/Animation.css";
 
@@ -16,6 +16,7 @@ const Admin = (): ReactElement => {
 	const loading = useCompanyStore((state) => state.loading);
 	const showWithNotesOnly = useCompanyStore((state) => state.showWithNotesOnly);
 
+	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 	const navigate = useNavigate();
 
 	const normalize = (str: string | undefined): string =>
@@ -53,47 +54,151 @@ const Admin = (): ReactElement => {
 		return nameA.localeCompare(nameB);
 	});
 
-	const Row = ({ index, style }: { index: number; style: CSSProperties }): ReactElement => (
-		<div style={style}>
-			<CompanyCard company={sortedCompanies[index]} />
-		</div>
-	);
+	useEffect(() => {
+		if (!sortedCompanies.length) {
+			setSelectedCompany(null);
+		}
+	}, [sortedCompanies]);
+
+	const selectedIndex = selectedCompany
+		? sortedCompanies.findIndex((company) => company.id === selectedCompany.id)
+		: -1;
+
+	const handleRowClick = (company: Company): void => {
+		console.log('row clicked', company.id);
+		setSelectedCompany((current) =>
+			current && current.id === company.id ? null : company
+		);
+	};
+
+	// Debug: log when selectedCompany changes
+	useEffect(() => {
+		console.log("selectedCompany changed:", selectedCompany && selectedCompany.id);
+	}, [selectedCompany]);
 
 	return (
 		<main className="admin-page">
-			<div className="admin-btn-container">
-				<button 
-					className="admin-top-btn" 
-					onClick={() => exportToExcel(sortedCompanies)}
-				>
-					Exportera till Excel
-				</button>
-				<button 
-					className="admin-top-btn" 
-					onClick={() => navigate("/nytt-foretag")}
-				>
-					Lägg till nytt företag
-				</button>
-			</div>
-			<Filter />
+			<aside className="admin-sidebar">
+				<div className="admin-sidebar-nav">
+					<button className="admin-sidebar-item active" type="button">
+						<span className="admin-sidebar-icon">📊</span>
+						<span>Dashboard</span>
+					</button>
+					{/* <button className="admin-sidebar-item active" type="button">
+						<span className="admin-sidebar-icon">🏢</span>
+						<span>Företag</span>
+					</button> */}
+					<button className="admin-sidebar-item" type="button" onClick={() => navigate("/nytt-foretag")}>
+						<span className="admin-sidebar-icon">➕</span>
+						<span>Nytt företag</span>
+					</button>
+					<button className="admin-sidebar-item" type="button" onClick={() => exportToExcel(sortedCompanies)}>
+						<span className="admin-sidebar-icon">📥</span>
+						<span>Exportera</span>
+					</button>
+					<button className="admin-sidebar-item" type="button" disabled={true}>
+						<span className="admin-sidebar-icon">⚙️</span>
+						<span>Inställningar</span>
+					</button>
+				</div>
+			</aside>
 
-			<div className="company-list">
-				{loading ? (
-					<p className="loading-text">Laddar</p>
-				) : sortedCompanies.length === 0 ? (
-					<p className="no-companies">Inga företag hittades</p>
-				) : (
-					<List
-						className="display-list"
-						height={window.innerHeight}
-						itemCount={sortedCompanies.length}
-						itemSize={300}
-						width="100%"
-					>
-						{Row}
-					</List>
-				)}
-			</div>
+			<section className="admin-content">
+				<div className="admin-toolbar">
+					<div className="admin-toolbar-left">
+						<div className="">
+							<p className="admin-kicker">Företagsregister</p>
+							<h1 className="admin-title">Företag</h1>
+						</div>
+							
+						<p className="admin-subtitle">Hantera och uppdatera företag i databasen</p>
+					</div>
+				</div>
+
+				<Filter />
+
+				<div className="table-panel">
+					{loading ? (
+						<p className="loading-text">Laddar</p>
+					) : sortedCompanies.length === 0 ? (
+						<p className="no-companies">Inga företag hittades</p>
+					) : (
+						<div className="table-container">
+							<table className="company-table">
+								<thead>
+									<tr>
+										<th>Företag</th>
+										<th>Adress</th>
+										<th>Kontakt</th>
+										<th>Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									{sortedCompanies.map((company) => {
+										const isSelected = selectedCompany?.id === company.id;
+										return (
+											<tr
+												key={company.id}
+												className={isSelected ? "selected" : ""}
+												onClick={() => handleRowClick(company)}
+											>
+												<td>
+													<div className="company-name">{company.companyName}</div>
+												</td>
+												<td>
+													<div className="company-address">{company.address}, {company.postalCode} {company.city}</div>
+												</td>
+												<td>
+													<div className="company-address">{company.contactPerson || "-"}</div>
+												</td>
+												<td>
+													<span className={`status-badge ${company.called ? "status-called" : "status-pending"}`}>
+														{company.called ? "Uppringd" : "Väntar"}
+													</span>
+												</td>
+											</tr>
+										);
+									})}
+								</tbody>
+							</table>
+						</div>
+					)}
+				</div>
+
+				{/* overlay for drawer */}
+				<div className={`drawer-overlay ${selectedCompany ? "show" : ""}`} onClick={() => setSelectedCompany(null)} />
+
+				<aside className={`drawer ${selectedCompany ? "is-open" : ""}`} aria-hidden={!selectedCompany}>
+					{selectedCompany ? (
+						<>
+							<div className="drawer-header">
+								<div>
+									<p className="drawer-kicker">Detaljer</p>
+									<h2 className="drawer-title">{selectedCompany.companyName}</h2>
+									<span className={`status-badge ${selectedCompany.called ? "status-called" : "status-pending"}`}>
+										{selectedCompany.called ? "Uppringd" : "Väntar"}
+									</span>
+								</div>
+								<button className="close-btn" onClick={() => setSelectedCompany(null)}>
+									Stäng
+								</button>
+							</div>
+
+							<div className="drawer-content">
+								<CompanyCard company={selectedCompany} />
+							</div>
+
+							<div className="drawer-footer">
+								<p>{selectedIndex >= 0 ? `${selectedIndex + 1} av ${sortedCompanies.length}` : ""}</p>
+							</div>
+						</>
+					) : (
+						<div className="drawer-empty">
+							<p>Välj ett företag i tabellen för att se detaljer här.</p>
+						</div>
+					)}
+				</aside>
+			</section>
 		</main>
 	);
 };

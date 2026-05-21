@@ -1,7 +1,7 @@
 import { signOut } from "firebase/auth";
 import { type ReactElement } from "react";
 
-import "@/css/header.css";
+import "@/css/Header.css";
 import { auth } from "@/data/firebase";
 import useAuthStore from "@/stores/authStore";
 import Logo from "@/assets/logo.svg";
