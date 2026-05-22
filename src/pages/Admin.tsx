@@ -8,6 +8,8 @@ import type { Company } from "@/types";
 import "@/css/Admin.css";
 import "@/css/Animation.css";
 
+const ROW_BATCH_SIZE = 30;
+
 const Admin = (): ReactElement => {
 	const companies = useCompanyStore((state) => state.companies);
 	const searchTerm = useCompanyStore((state) => state.searchTerm);
@@ -17,6 +19,7 @@ const Admin = (): ReactElement => {
 	const showWithNotesOnly = useCompanyStore((state) => state.showWithNotesOnly);
 
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+	const [visibleRowCount, setVisibleRowCount] = useState(ROW_BATCH_SIZE);
 	const navigate = useNavigate();
 
 	const normalize = (str: string | undefined): string =>
@@ -48,17 +51,37 @@ const Admin = (): ReactElement => {
 		});
 	}, [companies, hideCalled, normalizedSearchTerm, selectedVehicles, showWithNotesOnly]);
 
-	const sortedCompanies = [...filteredCompanies].sort((a, b) => {
-		const nameA = a.companyName.toLowerCase();
-		const nameB = b.companyName.toLowerCase();
-		return nameA.localeCompare(nameB);
-	});
+	const sortedCompanies = useMemo(
+		() =>
+			[...filteredCompanies].sort((a, b) => {
+				const nameA = a.companyName.toLowerCase();
+				const nameB = b.companyName.toLowerCase();
+				return nameA.localeCompare(nameB);
+			}),
+		[filteredCompanies]
+	);
+
+	const visibleCompanies = useMemo(
+		() => (normalizedSearchTerm ? sortedCompanies : sortedCompanies.slice(0, visibleRowCount)),
+		[normalizedSearchTerm, sortedCompanies, visibleRowCount]
+	);
+	const isSearchActive = normalizedSearchTerm.length > 0;
 
 	useEffect(() => {
 		if (!sortedCompanies.length) {
 			setSelectedCompany(null);
+			setVisibleRowCount(ROW_BATCH_SIZE);
+			return;
 		}
+
+		setVisibleRowCount(ROW_BATCH_SIZE);
 	}, [sortedCompanies]);
+
+	useEffect(() => {
+		if (selectedCompany && !sortedCompanies.some((company) => company.id === selectedCompany.id)) {
+			setSelectedCompany(null);
+		}
+	}, [selectedCompany, sortedCompanies]);
 
 	const selectedIndex = selectedCompany
 		? sortedCompanies.findIndex((company) => company.id === selectedCompany.id)
@@ -96,10 +119,10 @@ const Admin = (): ReactElement => {
 						<span className="admin-sidebar-icon">📥</span>
 						<span>Exportera</span>
 					</button>
-					<button className="admin-sidebar-item" type="button" disabled={true}>
+					{/* <button className="admin-sidebar-item" type="button" disabled={true}>
 						<span className="admin-sidebar-icon">⚙️</span>
 						<span>Inställningar</span>
-					</button>
+					</button> */}
 				</div>
 			</aside>
 
@@ -134,7 +157,7 @@ const Admin = (): ReactElement => {
 									</tr>
 								</thead>
 								<tbody>
-									{sortedCompanies.map((company) => {
+									{visibleCompanies.map((company) => {
 										const isSelected = selectedCompany?.id === company.id;
 										return (
 											<tr
@@ -161,6 +184,28 @@ const Admin = (): ReactElement => {
 									})}
 								</tbody>
 							</table>
+								{!isSearchActive && visibleRowCount < sortedCompanies.length ? (
+								<div className="table-load-more">
+									<button
+										type="button"
+										className="load-more-btn"
+										onClick={() => setVisibleRowCount((current) => current + ROW_BATCH_SIZE)}
+									>
+										Visa fler ({Math.min(ROW_BATCH_SIZE, sortedCompanies.length - visibleRowCount)} till)
+									</button>
+									<p className="load-more-status">
+										Visar {visibleCompanies.length} av {sortedCompanies.length} företag
+									</p>
+								</div>
+							) : isSearchActive ? (
+								<p className="load-more-status">
+									Sökning visar {visibleCompanies.length} av {sortedCompanies.length} företag
+								</p>
+							) : (
+								<p className="load-more-status">
+									Visar alla {sortedCompanies.length} företag
+								</p>
+							)}
 						</div>
 					)}
 				</div>

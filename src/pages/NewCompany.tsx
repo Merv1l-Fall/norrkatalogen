@@ -87,35 +87,6 @@ const NewCompany = (): ReactElement => {
     console.log(touched);
   };
 
-  const handleVehicleChange = (vehicle: keyof CompanyVehicles): void => {
-    setFormData((prev) => ({
-      ...prev,
-      vehicles: {
-        ...prev.vehicles,
-        [vehicle]: !prev.vehicles[vehicle],
-      },
-    }));
-  };
-
-  const vehicleKeys: Array<keyof CompanyVehicles> = [
-    "grusbil",
-    "godsbil",
-    "timmerbil",
-    "bulkbil",
-    "väghyvel",
-    "hjullastare",
-    "baklastare",
-    "kranbil",
-    "flisbil",
-    "dumper",
-    "skogsmaskin",
-    "grävare",
-    "maskintrailer",
-    "flakvaxlare",
-    "trailerdragare",
-    "asfalstrailer",
-  ];
-
   return (
     <div>
       <button
@@ -127,6 +98,7 @@ const NewCompany = (): ReactElement => {
         Tillbaka till listan
       </button>
       <div className="new-company-container">
+		<h1>Nytt företag</h1>
         <form className="add-company-form" onSubmit={handleSubmit}>
           <label htmlFor="companyName">Företag</label>
           <input
@@ -204,22 +176,6 @@ const NewCompany = (): ReactElement => {
             onBlur={() => setTouched(true)}
           />
           <p className="error">{error.email}</p>
-
-          <fieldset>
-            <legend>Fordonsflotta</legend>
-            <div className="vehicle-grid">
-              {vehicleKeys.map((vehicle) => (
-                <label key={vehicle}>
-                  <input
-                    type="checkbox"
-                    checked={formData.vehicles[vehicle] ?? false}
-                    onChange={() => handleVehicleChange(vehicle)}
-                  />
-                  {String(vehicle).charAt(0).toUpperCase() + String(vehicle).slice(1)}
-                </label>
-              ))}
-            </div>
-          </fieldset>
 
           <label htmlFor="notes">Noteringar</label>
           <textarea
