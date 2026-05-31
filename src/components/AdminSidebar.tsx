@@ -25,18 +25,18 @@ const AdminSidebar = (): ReactElement => {
 					end
 					className={({ isActive }) => `admin-sidebar-item${isActive ? " active" : ""}`}
 				>
-					<span className="admin-sidebar-icon">📊</span>
+					{/* <span className="admin-sidebar-icon">📊</span> */}
 					<span>Dashboard</span>
 				</NavLink>
 				<NavLink
 					to="/nytt-foretag"
 					className={({ isActive }) => `admin-sidebar-item${isActive ? " active" : ""}`}
 				>
-					<span className="admin-sidebar-icon">➕</span>
+					{/* <span className="admin-sidebar-icon">➕</span> */}
 					<span>Nytt företag</span>
 				</NavLink>
 				<button className="admin-sidebar-item" type="button" onClick={() => exportToExcel(sortedCompanies)}>
-					<span className="admin-sidebar-icon">📥</span>
+					{/* <span className="admin-sidebar-icon">📥</span> */}
 					<span>Exportera</span>
 				</button>
 			</nav>
