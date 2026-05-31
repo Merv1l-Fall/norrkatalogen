@@ -89,14 +89,6 @@ const NewCompany = (): ReactElement => {
 
   return (
     <div>
-      <button
-        className="new-company-back-btn"
-        onClick={() => {
-          navigate("/admin");
-        }}
-      >
-        Tillbaka till listan
-      </button>
       <div className="new-company-container">
 		<h1>Nytt företag</h1>
         <form className="add-company-form" onSubmit={handleSubmit}>

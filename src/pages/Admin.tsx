@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState, type ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
 import Filter from "@/components/Filter";
 import CompanyCard from "@/components/CompanyCard";
+import AdminTablePanel from "../components/AdminTablePanel";
 import useCompanyStore from "@/stores/companyStore";
-import exportToExcel from "@/utils/export";
 import type { Company } from "@/types";
 import "@/css/Admin.css";
 import "@/css/Animation.css";
@@ -20,7 +19,6 @@ const Admin = (): ReactElement => {
 
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
 	const [visibleRowCount, setVisibleRowCount] = useState(ROW_BATCH_SIZE);
-	const navigate = useNavigate();
 
 	const normalize = (str: string | undefined): string =>
 		str
@@ -100,33 +98,7 @@ const Admin = (): ReactElement => {
 	}, [selectedCompany]);
 
 	return (
-		<main className="admin-page">
-			<aside className="admin-sidebar">
-				<div className="admin-sidebar-nav">
-					<button className="admin-sidebar-item active" type="button">
-						<span className="admin-sidebar-icon">📊</span>
-						<span>Dashboard</span>
-					</button>
-					{/* <button className="admin-sidebar-item active" type="button">
-						<span className="admin-sidebar-icon">🏢</span>
-						<span>Företag</span>
-					</button> */}
-					<button className="admin-sidebar-item" type="button" onClick={() => navigate("/nytt-foretag")}>
-						<span className="admin-sidebar-icon">➕</span>
-						<span>Nytt företag</span>
-					</button>
-					<button className="admin-sidebar-item" type="button" onClick={() => exportToExcel(sortedCompanies)}>
-						<span className="admin-sidebar-icon">📥</span>
-						<span>Exportera</span>
-					</button>
-					{/* <button className="admin-sidebar-item" type="button" disabled={true}>
-						<span className="admin-sidebar-icon">⚙️</span>
-						<span>Inställningar</span>
-					</button> */}
-				</div>
-			</aside>
-
-			<section className="admin-content">
+		<section className="admin-content">
 				<div className="admin-toolbar">
 					<div className="admin-toolbar-left">
 						<div className="">
@@ -140,75 +112,17 @@ const Admin = (): ReactElement => {
 
 				<Filter />
 
-				<div className="table-panel">
-					{loading ? (
-						<p className="loading-text">Laddar</p>
-					) : sortedCompanies.length === 0 ? (
-						<p className="no-companies">Inga företag hittades</p>
-					) : (
-						<div className="table-container">
-							<table className="company-table">
-								<thead>
-									<tr>
-										<th>Företag</th>
-										<th>Adress</th>
-										<th>Kontakt</th>
-										<th>Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									{visibleCompanies.map((company) => {
-										const isSelected = selectedCompany?.id === company.id;
-										return (
-											<tr
-												key={company.id}
-												className={isSelected ? "selected" : ""}
-												onClick={() => handleRowClick(company)}
-											>
-												<td>
-													<div className="company-name">{company.companyName}</div>
-												</td>
-												<td>
-													<div className="company-address">{company.address}, {company.postalCode} {company.city}</div>
-												</td>
-												<td>
-													<div className="company-address">{company.contactPerson || "-"}</div>
-												</td>
-												<td>
-													<span className={`status-badge ${company.called ? "status-called" : "status-pending"}`}>
-														{company.called ? "Uppringd" : "Väntar"}
-													</span>
-												</td>
-											</tr>
-										);
-									})}
-								</tbody>
-							</table>
-								{!isSearchActive && visibleRowCount < sortedCompanies.length ? (
-								<div className="table-load-more">
-									<button
-										type="button"
-										className="load-more-btn"
-										onClick={() => setVisibleRowCount((current) => current + ROW_BATCH_SIZE)}
-									>
-										Visa fler ({Math.min(ROW_BATCH_SIZE, sortedCompanies.length - visibleRowCount)} till)
-									</button>
-									<p className="load-more-status">
-										Visar {visibleCompanies.length} av {sortedCompanies.length} företag
-									</p>
-								</div>
-							) : isSearchActive ? (
-								<p className="load-more-status">
-									Sökning visar {visibleCompanies.length} av {sortedCompanies.length} företag
-								</p>
-							) : (
-								<p className="load-more-status">
-									Visar alla {sortedCompanies.length} företag
-								</p>
-							)}
-						</div>
-					)}
-				</div>
+				<AdminTablePanel
+					loading={loading}
+					sortedCompanies={sortedCompanies}
+					visibleCompanies={visibleCompanies}
+					selectedCompany={selectedCompany}
+					isSearchActive={isSearchActive}
+					visibleRowCount={visibleRowCount}
+					rowBatchSize={ROW_BATCH_SIZE}
+					onRowClick={handleRowClick}
+					onLoadMore={() => setVisibleRowCount((current) => current + ROW_BATCH_SIZE)}
+				/>
 
 				{/* overlay for drawer */}
 				<div className={`drawer-overlay ${selectedCompany ? "show" : ""}`} onClick={() => setSelectedCompany(null)} />
@@ -243,8 +157,7 @@ const Admin = (): ReactElement => {
 						</div>
 					)}
 				</aside>
-			</section>
-		</main>
+		</section>
 	);
 };
 

@@ -2,12 +2,12 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	width: 100%;
 	padding: 1rem;
 	padding-left: 8rem;
 	padding-right: 8rem;
 	border-radius: 8px;
 	margin-bottom: 1rem;
-	box-shadow: 6px 6px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
 .new-company-back-btn {
@@ -27,10 +27,18 @@
 .add-company-form {
 	display: flex;
 	flex-direction: column;
-	width: 23rem;
+	width: 100%;
+	max-width: 30rem;
 }
 
 .add-company-inputs {
+	width: 100%;
+	padding: 0.5rem;
+}
+
+.add-company-textarea {
+	width: 100%;
+	min-height: 8rem;
 	padding: 0.5rem;
 }
 

@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 
 import Header from "@/components/Header";
+import PrivateLayout from "@/components/PrivateLayout";
 import Admin from "@/pages/Admin";
 import Login from "@/pages/Login";
 import PrivateRoute from "@/pages/PrivateRoute";
@@ -38,21 +39,15 @@ function App(): ReactElement {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
-            path="/admin"
             element={
               <PrivateRoute>
-                <Admin />
+                <PrivateLayout />
               </PrivateRoute>
             }
-          />
-          <Route
-            path="/nytt-foretag"
-            element={
-              <PrivateRoute>
-                <NewCompany />
-              </PrivateRoute>
-            }
-          />
+          >
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/nytt-foretag" element={<NewCompany />} />
+          </Route>
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
