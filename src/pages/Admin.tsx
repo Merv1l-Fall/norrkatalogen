@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactElement } from "react";
 import Filter from "@/components/Filter";
 import CompanyCard from "@/components/CompanyCard";
 import AdminTablePanel from "../components/AdminTablePanel";
+import { updateCompany } from "@/data/crud";
 import useCompanyStore from "@/stores/companyStore";
 import type { Company } from "@/types";
 import "@/css/Admin.css";
@@ -16,8 +17,11 @@ const Admin = (): ReactElement => {
 	const selectedVehicles = useCompanyStore((state) => state.selectedVehicles);
 	const loading = useCompanyStore((state) => state.loading);
 	const showWithNotesOnly = useCompanyStore((state) => state.showWithNotesOnly);
+	const updateCompanyLocally = useCompanyStore((state) => state.updateCompanyLocally);
 
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
+	const [editedCompany, setEditedCompany] = useState<Company | null>(null);
+	const [isEditing, setIsEditing] = useState(false);
 	const [visibleRowCount, setVisibleRowCount] = useState(ROW_BATCH_SIZE);
 
 	const normalize = (str: string | undefined): string =>
@@ -81,6 +85,61 @@ const Admin = (): ReactElement => {
 		}
 	}, [selectedCompany, sortedCompanies]);
 
+	useEffect(() => {
+		if (!selectedCompany) {
+			setEditedCompany(null);
+			setIsEditing(false);
+			return;
+		}
+
+		setEditedCompany(selectedCompany);
+		setIsEditing(false);
+	}, [selectedCompany]);
+
+	const handleFieldChange = (field: keyof Company, value: unknown): void => {
+		setEditedCompany((current) => (current ? { ...current, [field]: value } : current));
+	};
+
+	const handleFleetChange = (vehicle: string): void => {
+		setEditedCompany((current) =>
+			current
+				? {
+					...current,
+					vehicles: {
+						...current.vehicles,
+						[vehicle]: !current.vehicles?.[vehicle],
+					},
+				}
+				: current
+		);
+	};
+
+	const handleCalledChange = (checked: boolean): void => {
+		handleFieldChange("called", checked);
+	};
+
+	const handleDrawerAction = (): void => {
+		if (!selectedCompany || !editedCompany) {
+			return;
+		}
+
+		if (!isEditing) {
+			setIsEditing(true);
+			return;
+		}
+
+		setIsEditing(false);
+		updateCompanyLocally(editedCompany);
+		setSelectedCompany(editedCompany);
+		void updateCompany(editedCompany.id, editedCompany)
+			.then(() => {
+				console.log("Company updated successfully");
+			})
+			.catch((error) => {
+				console.error("Error updating company:", error);
+			});
+	};
+
 	const selectedIndex = selectedCompany
 		? sortedCompanies.findIndex((company) => company.id === selectedCompany.id)
 		: -1;
@@ -133,18 +192,30 @@ const Admin = (): ReactElement => {
 							<div className="drawer-header">
 								<div>
 									<p className="drawer-kicker">Detaljer</p>
-									<h2 className="drawer-title">{selectedCompany.companyName}</h2>
-									<span className={`status-badge ${selectedCompany.called ? "status-called" : "status-pending"}`}>
-										{selectedCompany.called ? "Uppringd" : "Väntar"}
+									<h2 className="drawer-title">{editedCompany?.companyName ?? selectedCompany.companyName}</h2>
+									<span className={`status-badge ${(editedCompany?.called ?? selectedCompany.called) ? "status-called" : "status-pending"}`}>
+										{(editedCompany?.called ?? selectedCompany.called) ? "Uppringd" : "Väntar"}
 									</span>
 								</div>
-								<button className="close-btn" onClick={() => setSelectedCompany(null)}>
-									Stäng
-								</button>
+								<div className="drawer-actions">
+									<button className="drawer-action-btn" onClick={handleDrawerAction}>
+										{isEditing ? "Spara" : "Redigera"}
+									</button>
+									<button className="close-btn" onClick={() => setSelectedCompany(null)}>
+										Stäng
+									</button>
+								</div>
 							</div>
 
 							<div className="drawer-content">
-								<CompanyCard company={selectedCompany} />
+								<CompanyCard
+									company={selectedCompany}
+									editedCompany={editedCompany ?? selectedCompany}
+									isEditing={isEditing}
+									onFieldChange={handleFieldChange}
+									onFleetChange={handleFleetChange}
+									onCalledChange={handleCalledChange}
+								/>
 							</div>
 
 							<div className="drawer-footer">

@@ -1,12 +1,15 @@
-import { useState, useEffect, memo, type ChangeEvent, type ReactElement } from "react";
+import { memo, type ChangeEvent, type ReactElement } from "react";
 
 import "@/css/CompanyCard.css";
-import { updateCompany } from "@/data/crud";
-import useCompanyStore from "@/stores/companyStore";
 import type { Company } from "@/types";
 
 interface CompanyCardProps {
   company: Company;
+  editedCompany: Company;
+  isEditing: boolean;
+  onFieldChange: (field: keyof Company, value: unknown) => void;
+  onFleetChange: (vehicle: string) => void;
+  onCalledChange: (checked: boolean) => void;
 }
 
 const VEHICLE_ORDER: string[] = [
@@ -28,115 +31,78 @@ const VEHICLE_ORDER: string[] = [
   "asfaltstrailer",
 ];
 
-const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
-  const [editMode, setEditMode] = useState<boolean>(false);
-  const [editedData, setEditedData] = useState<Company>(company);
-
-  const updateCompanyLocally = useCompanyStore(
-    (state) => state.updateCompanyLocally
-  );
-
-  useEffect(() => {
-    setEditedData(company);
-  }, [company]);
-
-  const handleChange = (field: keyof Company, value: unknown): void => {
-    setEditedData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleFleetChange = (vehicle: string): void => {
-    setEditedData((prev) => ({
-      ...prev,
-      vehicles: {
-        ...prev.vehicles,
-        [vehicle]: !prev.vehicles[vehicle],
-      },
-    }));
-  };
-
-  const handleSave = (): void => {
-    console.log("Saved data:", editedData);
-    setEditMode(false);
-    void updateCompany(editedData.id, editedData)
-      .then(() => {
-        console.log("Company updated successfully");
-      })
-      .catch((error) => {
-        console.error("Error updating company:", error);
-      });
-    console.log("Updating company locally");
-    updateCompanyLocally(editedData);
-  };
+const CompanyCard = ({
+  company,
+  editedCompany,
+  isEditing,
+  onFieldChange,
+  onFleetChange,
+  onCalledChange,
+}: CompanyCardProps): ReactElement => {
 
   const handleTextChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = event.currentTarget;
-    handleChange(name as keyof Company, value);
+    onFieldChange(name as keyof Company, value);
   };
 
   const handleTextAreaChange = (event: ChangeEvent<HTMLTextAreaElement>): void => {
     const { name, value } = event.currentTarget;
-    handleChange(name as keyof Company, value);
+    onFieldChange(name as keyof Company, value);
   };
 
   const handleCheckboxChange = (event: ChangeEvent<HTMLInputElement>): void => {
     const { checked } = event.currentTarget;
-    handleChange("called", checked);
+    onCalledChange(checked);
   };
 
   return (
     <div className="company-card">
       {/* Company Info */}
       <div className="company-section">
-        {editMode ? (
+        {isEditing ? (
           <>
             <input
               name="companyName"
-              value={editedData.companyName}
+              value={editedCompany.companyName}
               onChange={handleTextChange}
             />
             <input
               name="address"
-              value={editedData.address}
+              value={editedCompany.address}
               onChange={handleTextChange}
             />
             <input
               name="postalCode"
-              value={editedData.postalCode}
+              value={editedCompany.postalCode}
               onChange={handleTextChange}
             />
             <input
               name="city"
-              value={editedData.city}
+              value={editedCompany.city}
               onChange={handleTextChange}
             />
           </>
         ) : (
           <>
-            <p className="company-name">{editedData.companyName}</p>
-            <p>{editedData.address}</p>
+            <p className="company-name">{company.companyName}</p>
+            <p>{company.address}</p>
             <p>
-              {editedData.postalCode} {editedData.city}
+              {company.postalCode} {company.city}
             </p>
           </>
         )}
-        <button
-          className="edit-button"
-          onClick={() => (editMode ? handleSave() : setEditMode(true))}
-        >
-          {editMode ? "Spara" : "Redigera"}
-        </button>
       </div>
 
       {/* Contact Info */}
       <div className="contact-section">
-        {editMode ? (
+        {isEditing ? (
           <>
             <label htmlFor="contact-person">Kontaktperson</label>
             <input
               id="contact-person"
               name="contactPerson"
               type="text"
-              value={editedData.contactPerson}
+              value={editedCompany.contactPerson}
               onChange={handleTextChange}
             />
             <label htmlFor="phone">Telefon</label>
@@ -144,7 +110,7 @@ const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
               id="phone"
               name="contactPhone"
               type="text"
-              value={editedData.contactPhone}
+              value={editedCompany.contactPhone}
               onChange={handleTextChange}
             />
             <label htmlFor="email">E-post</label>
@@ -152,14 +118,14 @@ const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
               id="email"
               name="email"
               type="text"
-              value={editedData.email}
+              value={editedCompany.email}
               onChange={handleTextChange}
             />
             <label className="ringt-checkbox">
               Ringt?
               <input
                 type="checkbox"
-                checked={editedData.called ?? false}
+                checked={editedCompany.called ?? false}
                 onChange={handleCheckboxChange}
               />
             </label>
@@ -167,17 +133,17 @@ const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
         ) : (
           <>
             <p className="contact-info-header">Kontaktperson</p>
-            <p>{editedData.contactPerson}</p>
+            <p>{company.contactPerson}</p>
             <p>Telefon</p>
-            <p>{editedData.contactPhone}</p>
+            <p>{company.contactPhone}</p>
             <p>E-post</p>
-            <p>{editedData.email}</p>
+            <p>{company.email}</p>
             <label className="ringt-checkbox">
               Ringt?
               <input
                 className="called-checkbox"
                 type="checkbox"
-                checked={editedData.called ?? false}
+                checked={company.called ?? false}
                 disabled
               />
             </label>
@@ -188,14 +154,14 @@ const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
       {/* Notes */}
       <div className="notes-section">
         <h3>Noteringar</h3>
-        {editMode ? (
+        {isEditing ? (
           <textarea
             name="notes"
-            value={editedData.notes ?? ""}
+            value={editedCompany.notes ?? ""}
             onChange={handleTextAreaChange}
           />
         ) : (
-          <p>{editedData.notes}</p>
+          <p>{company.notes}</p>
         )}
       </div>
 
@@ -211,9 +177,9 @@ const CompanyCard = ({ company }: CompanyCardProps): ReactElement => {
               <input
                 className="vehicle-checkbox"
                 type="checkbox"
-                checked={editedData.vehicles[vehicle] ?? false}
-                onChange={() => handleFleetChange(vehicle)}
-                disabled={!editMode}
+                checked={editedCompany.vehicles[vehicle] ?? false}
+                onChange={() => onFleetChange(vehicle)}
+                disabled={!isEditing}
               />
             </label>
           ))}

@@ -156,6 +156,13 @@
   border-bottom: 1px solid rgba(21, 33, 43, 0.08);
 }
 
+.drawer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
 .drawer-kicker {
   font-size: 0.75rem;
   font-weight: 700;
@@ -186,6 +193,23 @@
   &:hover {
     background: #f6f8fb;
     transform: translateY(-1px);
+  }
+}
+
+.drawer-action-btn {
+  background: linear-gradient(135deg, #1f4f8a, #2c6fb3);
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 0.95rem;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 700;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 12px 22px rgba(31, 79, 138, 0.2);
   }
 }
 
