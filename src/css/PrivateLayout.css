@@ -1,0 +1,26 @@
+.admin-page {
+  width: 100%;
+  margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+}
+
+.private-layout-content {
+  min-width: 0;
+}
+
+@media (max-width: 1200px) {
+  .admin-page {
+    grid-template-columns: 220px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    grid-template-columns: 1fr;
+    width: min(100% - 1rem, 1600px);
+    padding-top: 1rem;
+  }
+}

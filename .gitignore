@@ -36,3 +36,6 @@ companies.json
 #scripts
 updateCompanies.mjs
 updateCompaniesFleet.mjs
+
+## unnecessary files
+mockup-table-with-drawer.html

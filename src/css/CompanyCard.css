@@ -1,102 +1,124 @@
 .company-card {
-  display: flex;
-  border: 1px solid #151515;
-  border-radius: 8px;
-  padding: 10px;
-  margin: 10px 0;
-  gap: 0.7rem;
-  min-width: 100%;
- box-shadow: 6px 6px 5px 0px rgba(0,0,0,0.75);
+	display: flex;
+	flex-direction: column;
+	gap: 0.85rem;
+	width: 100%;
+	padding: 0.25rem 0;
+	color: #15212b;
 }
 
 .company-section,
 .contact-section,
 .notes-section,
 .fleet-section {
-  border: 1px solid #151515;
-  border-radius: 4px;
-  padding: 1rem;
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: center;
-  width: 20rem;
-  position: relative;
-	 
-	p{
-		text-wrap: wrap;
-		min-height: 1rem;
-		margin-top: 0.2rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.65rem;
+	padding: 1rem;
+	border-radius: 16px;
+	background: #fff;
+	border: 1px solid rgba(21, 33, 43, 0.08);
+	position: relative;
+
+	p {
+		word-break: break-word;
+		margin-top: 0.15rem;
+		line-height: 1.5;
 	}
 }
 
 .notes-section {
-  flex-grow: 2;
-	/* justify-content: flex-start; */
-	width: 30rem;
+	min-height: 10rem;
 
-	textarea, p{
+	textarea,
+	p {
 		flex-grow: 1;
 	}
 }
 
 .edit-button {
-  margin-top: 10px;
-  padding: 6px 12px;
-  width: 5rem;
-  background-color: #151515;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  position: absolute;
-  bottom: 0.5rem;
-  left: 0.5rem;
-}
+	margin-top: 0.5rem;
+	padding: 0.65rem 1rem;
+	width: fit-content;
+	background: linear-gradient(135deg, #1f4f8a, #2c6fb3);
+	color: white;
+	border: none;
+	border-radius: 999px;
+	cursor: pointer;
+	font-weight: 700;
+	transition:
+		transform 0.2s ease,
+		box-shadow 0.2s ease;
 
-.edit-button:hover {
-  background-color: #333;
+	&:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 12px 22px rgba(31, 79, 138, 0.2);
+	}
 }
 
 .ringt-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	margin-top: 0.35rem;
+	font-weight: 600;
 }
 
-.fleet-title {
-  font-weight: bold;
-  margin-bottom: 5px;
+.fleet-title,
+.contact-info-header {
+	font-weight: 700;
+	font-size: 0.92rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #607083;
 }
 
 .fleet-grid {
-  display: grid;
-  grid-template-columns: repeat(2, auto);
-  gap: 5px 15px;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 0.55rem 0.9rem;
 }
 
 .fleet-grid label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem;
+	font-size: 0.92rem;
+	color: #304050;
 }
 
-input, textarea {
-  font-size: 14px;
-  padding: 4px;
-  margin: 2px 0;
-}
+input,
 textarea {
-  resize: none;
+	font-size: 0.95rem;
+	padding: 0.7rem 0.85rem;
+	margin: 0;
+	border-radius: 12px;
+	border: 1px solid rgba(21, 33, 43, 0.14);
+	background: #fff;
+	color: #15212b;
 }
 
-.vehicle-checkbox, .called-checkbox {
-  width: 1rem;
-  height: 1rem;
+textarea {
+	resize: vertical;
+	min-height: 7rem;
+}
+
+.vehicle-checkbox,
+.called-checkbox {
+	width: 1rem;
+	height: 1rem;
+	accent-color: #1f4f8a;
 }
 
 .vehicle-label {
-  display: inline-block;
-  min-width: 6.05rem;
+	display: inline-block;
+	min-width: 0;
+	font-weight: 500;
+}
+
+@media (max-width: 520px) {
+	.fleet-grid {
+		grid-template-columns: 1fr;
+	}
 }
