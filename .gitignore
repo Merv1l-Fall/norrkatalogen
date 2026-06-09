@@ -36,6 +36,8 @@ companies.json
 #scripts
 updateCompanies.mjs
 updateCompaniesFleet.mjs
+.agents
+skills-lock.json
 
 ## unnecessary files
 mockup-table-with-drawer.html
